@@ -29,3 +29,10 @@ public class GameWindow extends JFrame
         window.startGame();
     }
 }
+
+/*
+TODO
+    change frame when mario jumps
+    add music while playing
+    add music when mario dies
+*/
