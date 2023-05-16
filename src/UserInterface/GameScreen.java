@@ -49,26 +49,6 @@ public class GameScreen extends JPanel implements Runnable, KeyListener
     public void startGame()
     {
         thread.start();
-        playBG("data/mario/Super Mario Bros. Theme Song.wav");
-    }
-
-    public void playBG(String filepath)
-    {
-        new Thread(() ->
-        {
-            try
-            {
-                Clip clip = AudioSystem.getClip();
-                AudioInputStream sound = AudioSystem.getAudioInputStream(new File(filepath));
-                clip.open(sound);
-                clip.loop(Clip.LOOP_CONTINUOUSLY);
-            }
-
-            catch (UnsupportedAudioFileException | LineUnavailableException | IOException e)
-            {
-                throw new RuntimeException(e);
-            }
-        }).start();
     }
 
     @Override
