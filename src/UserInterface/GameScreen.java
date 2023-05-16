@@ -17,10 +17,14 @@ public class GameScreen extends JPanel implements Runnable, KeyListener
     public static final int startState = 0;
     public static final int runningState = 1;
     public static final int gameOver = 2;
-
     public static final float gravity = 0.1F;
     public static final float ground = 240;
+
     private final Thread thread;
+    private Thread audioThread;
+    private boolean audioPlaying;
+
+
     private final Mario mario;
     private final Land land;
     private final Clouds cloud;
@@ -46,9 +50,66 @@ public class GameScreen extends JPanel implements Runnable, KeyListener
         gameOverText = Resource.getImage("data/mario/gameover.png");
     }
 
+//    private void playBackgroundAudio(String audioFilePath)
+//    {
+//        audioThread = new Thread(() ->
+//        {
+//            try
+//            {
+//                File audioFile = new File(audioFilePath);
+//                AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(audioFile);
+//                AudioFormat format = audioInputStream.getFormat();
+//                DataLine.Info info = new DataLine.Info(SourceDataLine.class, format);
+//                SourceDataLine audioLine = (SourceDataLine) AudioSystem.getLine(info);
+//                audioLine.open(format);
+//                audioLine.start();
+//
+//                int bufferSize = 1024;
+//                byte[] buffer = new byte[bufferSize];
+//                int bytesRead;
+//
+//                audioPlaying = true;
+//
+//                while (!Thread.currentThread().isInterrupted() && audioPlaying)
+//                {
+//                    while ((bytesRead = audioInputStream.read(buffer, 0, bufferSize)) != -1)
+//                    {
+//                        audioLine.write(buffer, 0, bytesRead);
+//                    }
+//                    audioInputStream.reset();  // Reset to the beginning of the audio file
+//                }
+//
+//                audioLine.drain();
+//                audioLine.stop();
+//                audioLine.close();
+//                audioInputStream.close();
+//            }
+//
+//            catch (LineUnavailableException | IOException | UnsupportedAudioFileException e)
+//            {
+//                System.out.println("Error playing background audio: " + e.getMessage());
+//            }
+//        });
+//        audioThread.start();
+//    }
+
+//    public void stopBackgroundAudio()
+//    {
+//        if (audioPlaying)
+//        {
+//            audioPlaying = false;
+//            if (audioThread != null && audioThread.isAlive())
+//            {
+//                audioThread.interrupt();
+//                audioThread = null;
+//            }
+//        }
+//    }
+
     public void startGame()
     {
         thread.start();
+//        playBackgroundAudio("data/mario/bgm.wav");
     }
 
     @Override
@@ -56,40 +117,36 @@ public class GameScreen extends JPanel implements Runnable, KeyListener
     {
         while (true)
         {
-            try
+            if (gameState == runningState)
             {
-                if (gameState == runningState)
-                {
-                    update();
-                    repaint();
+                update();
+                repaint();
+                try {
+                    if (currentScore <= 150) {
+                        Thread.sleep(5);
+                    }
+
+                    if (currentScore >= 151 && currentScore <= 300) {
+                        Thread.sleep(3);
+                    }
+
+                    if (currentScore >= 301) {
+                        Thread.sleep(2);
+                    }
                 }
 
-                if (currentScore <= 150)
+                catch (InterruptedException ex)
                 {
-                    Thread.sleep(5);
+                    ex.printStackTrace();
+                    System.out.println("here");
                 }
-
-                if (currentScore >= 151 && currentScore <= 300)
-                {
-                    Thread.sleep(3);
-                }
-
-                if (currentScore >= 301)
-                {
-                    Thread.sleep(2);
-                }
-            }
-
-            catch (InterruptedException ex)
-            {
-                ex.printStackTrace();
-                System.out.println("here");
             }
         }
     }
 
     public void update()
     {
+
         if (gameState == runningState) {
             mario.update();
             land.update();
@@ -135,6 +192,7 @@ public class GameScreen extends JPanel implements Runnable, KeyListener
             }
 
             case gameOver -> {
+//                stopBackgroundAudio();
                 cloud.draw(g);
                 land.draw(g);
                 mario.draw(g);
