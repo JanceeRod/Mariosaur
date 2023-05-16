@@ -3,12 +3,14 @@ package UserInterface;
 import Objects.*;
 import Stuff.Resource;
 
+import javax.sound.sampled.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 
 public class GameScreen extends JPanel implements Runnable, KeyListener
 {
@@ -29,7 +31,6 @@ public class GameScreen extends JPanel implements Runnable, KeyListener
     private int highScore = 0;
     private final BufferedImage gameOverText;
 
-//    File file = new File();
 
     public GameScreen()
     {
@@ -45,7 +46,30 @@ public class GameScreen extends JPanel implements Runnable, KeyListener
         gameOverText = Resource.getImage("data/mario/gameover.png");
     }
 
-    public void startGame() { thread.start(); }
+    public void startGame()
+    {
+        thread.start();
+        playBG("data/mario/Super Mario Bros. Theme Song.wav");
+    }
+
+    public void playBG(String filepath)
+    {
+        new Thread(() ->
+        {
+            try
+            {
+                Clip clip = AudioSystem.getClip();
+                AudioInputStream sound = AudioSystem.getAudioInputStream(new File(filepath));
+                clip.open(sound);
+                clip.loop(Clip.LOOP_CONTINUOUSLY);
+            }
+
+            catch (UnsupportedAudioFileException | LineUnavailableException | IOException e)
+            {
+                throw new RuntimeException(e);
+            }
+        }).start();
+    }
 
     @Override
     public void run()
