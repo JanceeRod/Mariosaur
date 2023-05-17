@@ -8,7 +8,6 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
-import java.io.File;
 
 public class GameScreen extends JPanel implements Runnable, KeyListener
 {
