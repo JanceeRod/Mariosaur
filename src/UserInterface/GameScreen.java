@@ -3,11 +3,15 @@ package UserInterface;
 import Objects.*;
 import Stuff.Resource;
 
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
+import java.io.File;
 
 public class GameScreen extends JPanel implements Runnable, KeyListener
 {
@@ -28,7 +32,7 @@ public class GameScreen extends JPanel implements Runnable, KeyListener
     private int highScore = 0;
     private final BufferedImage gameOverText;
 
-//    File file = new File();
+    private boolean isMusicPlaying = false;
 
     public GameScreen()
     {
@@ -45,6 +49,43 @@ public class GameScreen extends JPanel implements Runnable, KeyListener
     }
 
     public void startGame() { thread.start(); }
+
+    private void playMusic()
+    {
+        if (isMusicPlaying)
+        {
+            return;
+        }
+
+        new Thread(() -> {
+            try {
+                AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File("data/mario/marioscoresound_1.wav"));
+
+                Clip musicClip = AudioSystem.getClip();
+                musicClip.open(audioInputStream);
+                musicClip.start();
+                musicClip.loop(Clip.LOOP_CONTINUOUSLY);
+
+                isMusicPlaying = true;
+
+                Thread.sleep(musicClip.getMicrosecondLength() / 1000);
+
+                musicClip.stop();
+                musicClip.close();
+                audioInputStream.close();
+
+                isMusicPlaying = false;
+            }
+
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+        }).start();
+    }
+
+
+
 
     @Override
     public void run()
@@ -100,6 +141,7 @@ public class GameScreen extends JPanel implements Runnable, KeyListener
     public void addScore(int score)
     {
         this.currentScore += score;
+        playMusic();
     }
 
     @Override
