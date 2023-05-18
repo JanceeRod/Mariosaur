@@ -102,15 +102,30 @@ public class GameScreen extends JPanel implements Runnable, KeyListener
 
                 if (currentScore <= 150)
                 {
+                    Thread.sleep(6);
+                }
+
+                if (currentScore >= 151 && currentScore <= 200)
+                {
                     Thread.sleep(5);
                 }
 
-                if (currentScore >= 151 && currentScore <= 300)
+                if (currentScore >= 201 && currentScore <= 250)
+                {
+                    Thread.sleep(4);
+                }
+
+                if (currentScore >= 251 && currentScore <= 300)
                 {
                     Thread.sleep(3);
                 }
 
-                if (currentScore >= 301)
+                if (currentScore >= 301 && currentScore <= 400)
+                {
+                    Thread.sleep(2);
+                }
+
+                if (currentScore >= 401)
                 {
                     Thread.sleep(2);
                 }
