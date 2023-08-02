@@ -12,7 +12,7 @@ public class GameWindow extends JFrame
         setSize(600, 300);
         setLocation(600, 400);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setResizable(false);
+        setResizable(true);
         add(gameScreen);
         addKeyListener(gameScreen);
     }
